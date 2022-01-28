@@ -28,30 +28,15 @@ def print_result(UI, one, two, three, four, winner):
 def click1(UI):
     method = UI.combo.get()[0]
     winner, a, b, c = "", 0, 0, 0
+
     # Метод относительного большинства
     if method == "1":
         # Подсчитываем голоса
         a = int(UI.txt1.get()) + int(UI.txt2.get())
         b = int(UI.txt3.get()) + int(UI.txt4.get())
         c = int(UI.txt5.get()) + int(UI.txt6.get())
-        # Определяем победителя
-        # m, i = a, 0
-        # if b > m: m = b
-        # if c > m: m = c
-        # if m == a: winner = "Победил кандидат A"; i += 1
-        # if m == b: winner = "Победил кандидат B"; i += 1
-        # if m == c: winner = "Победил кандидат C"; i += 1
-        # if i > 1: winner = "Ничья, победителя нет"
+
         winner = get_winner(a, b, c)
-        # Выводим результаты
-        # UI.txt.configure(state='normal')
-        # UI.txt.delete("1.0", "end")
-        # UI.txt.insert(tk.INSERT, f'Подсчёт голосов: \n'
-        #                          f"за кандидата А: {a} голосов \n"
-        #                          f"за кандидата B: {b} голосов \n"
-        #                          f"за кандидата C: {c} голосов \n"
-        #                          f"{winner} \n")
-        # UI.txt.configure(state='disabled')
         print_result(UI, "Подсчёт голосов:",
                      f"за кандидата А: {a} голосов",
                      f"за кандидата B: {b} голосов",
@@ -86,20 +71,12 @@ def click1(UI):
             elif (ba > ab) & (bc > cb): winner = "Победил кандидат B"
             elif (cb > bc) & (ca > ac): winner = "Победил кандидат C"
             else: winner = "Ничья, победителя нет"
-            # Выводим результаты
-            # UI.txt.configure(state='normal')
-            # UI.txt.delete("1.0", "end")
-            # UI.txt.insert(tk.INSERT, f'Попарное сравнение: \n'
-            #                          f"{zab} \n"
-            #                          f"{zbc} \n"
-            #                          f"{zac} \n"
-            #                          f"{winner} \n")
-            # UI.txt.configure(state='disabled')
 
             print_result(UI, "Попарное сравнение:", zab, zbc, zac, winner)
 
         if method == "3":
             # Модель Кондорсе: Правило Копленда
+            # Считаем оценки Копленда
             if ab > ba: a += 1; b -= 1
             elif ab < ba: a -= 1; b += 1
 
@@ -116,5 +93,31 @@ def click1(UI):
                          f"C {c}",
                          winner)
 
+        if method == "4":
+            # Модель Кондорсе: Правило Симпсона
+            # Считаем оценки Симпсона
+            if ab < ac: a = ab
+            else: a = ac
+            if ba < bc: b = ba
+            else: b = bc
+            if ca < cb: c = ca
+            else: c = cb
 
+            winner = get_winner(a, b, c)
+            print_result(UI, "Победы в парах и оценка Симпсона:",
+                         f"A {ab}, {ac}; оценка: {a}",
+                         f"B {ba}, {bc}; оценка: {b}",
+                         f"C {ca}, {cb}; оценка: {c}",
+                         winner)
 
+    if method == "5":
+        # Модель Борда
+        a = 2 * int(UI.txt1.get()) + 2 * int(UI.txt2.get()) + int(UI.txt3.get()) + int(UI.txt5.get())
+        b = 2 * int(UI.txt3.get()) + 2 * int(UI.txt4.get()) + int(UI.txt1.get()) + int(UI.txt6.get())
+        c = 2 * int(UI.txt5.get()) + 2 * int(UI.txt6.get()) + int(UI.txt2.get()) + int(UI.txt4.get())
+        winner = get_winner(a,b,c)
+        print_result(UI, "Сумма очков:",
+                     f"A {a}",
+                     f"B {b}",
+                     f"C {c}",
+                     winner)
