@@ -1,7 +1,7 @@
 import tkinter as tk
 
 
-def get_winner(a,b,c):
+def get_winner(a, b, c):
     # Определяем победителя
     m, i, winner = a, 0, ""
     if b > m: m = b
@@ -13,14 +13,17 @@ def get_winner(a,b,c):
     return winner
 
 
-def print_result(UI, one, two, three, four, winner):
+def print_result(UI, title, one, two, three, four, winner):
     # Выводим результаты
     UI.txt.configure(state='normal')
     UI.txt.delete("1.0", "end")
-    UI.txt.insert(tk.INSERT, f"{one} \n"
+    UI.txt.insert(tk.INSERT, f"{title} \n"
+                             "\n"
+                             f"{one} \n"
                              f"{two} \n"
                              f"{three} \n"
                              f"{four} \n"
+                             "\n"
                              f"{winner} \n")
     UI.txt.configure(state='disabled')
 
@@ -29,7 +32,7 @@ def click1(UI):
     method = UI.combo.get()[0]
     winner, a, b, c = "", 0, 0, 0
 
-    # Метод относительного большинства
+    # Модель относительного большинства
     if method == "1":
         # Подсчитываем голоса
         a = int(UI.txt1.get()) + int(UI.txt2.get())
@@ -37,14 +40,16 @@ def click1(UI):
         c = int(UI.txt5.get()) + int(UI.txt6.get())
 
         winner = get_winner(a, b, c)
-        print_result(UI, "Подсчёт голосов:",
+        print_result(UI,
+                     "Модель относительного большинства",
+                     "Подсчёт голосов:",
                      f"за кандидата А: {a} голосов",
                      f"за кандидата B: {b} голосов",
                      f"за кандидата C: {c} голосов",
                      winner)
 
-    # Метод Кондорсе
-    if method in ["2","3","4"]:
+    # Модель Кондорсе
+    if method in ["2", "3", "4"]:
         # Подсчет победителей в каждой паре
         ab = int(UI.txt1.get()) + int(UI.txt2.get()) + int(UI.txt5.get())
         ba = int(UI.txt3.get()) + int(UI.txt4.get()) + int(UI.txt6.get())
@@ -72,7 +77,7 @@ def click1(UI):
             elif (cb > bc) & (ca > ac): winner = "Победил кандидат C"
             else: winner = "Ничья, победителя нет"
 
-            print_result(UI, "Попарное сравнение:", zab, zbc, zac, winner)
+            print_result(UI, "Модель Кондорсе: явный победитель", "Попарное сравнение:", zab, zbc, zac, winner)
 
         if method == "3":
             # Модель Кондорсе: Правило Копленда
@@ -86,8 +91,10 @@ def click1(UI):
             if ac > ca: a += 1; c -= 1
             elif ca > ac: a -= 1; c += 1
 
-            winner = get_winner(a,b,c)
-            print_result(UI, "Оценка Копленда:",
+            winner = get_winner(a, b, c)
+            print_result(UI,
+                         "Модель Кондорсе: Правило Копленда",
+                         "Оценка Копленда:",
                          f"A {a}",
                          f"B {b}",
                          f"C {c}",
@@ -98,13 +105,17 @@ def click1(UI):
             # Считаем оценки Симпсона
             if ab < ac: a = ab
             else: a = ac
+
             if ba < bc: b = ba
             else: b = bc
+
             if ca < cb: c = ca
             else: c = cb
 
             winner = get_winner(a, b, c)
-            print_result(UI, "Победы в парах и оценка Симпсона:",
+            print_result(UI,
+                         "Модель Кондорсе: Правило Симпсона",
+                         "Победы в парах и оценка Симпсона:",
                          f"A {ab}, {ac}; оценка: {a}",
                          f"B {ba}, {bc}; оценка: {b}",
                          f"C {ca}, {cb}; оценка: {c}",
@@ -115,8 +126,11 @@ def click1(UI):
         a = 2 * int(UI.txt1.get()) + 2 * int(UI.txt2.get()) + int(UI.txt3.get()) + int(UI.txt5.get())
         b = 2 * int(UI.txt3.get()) + 2 * int(UI.txt4.get()) + int(UI.txt1.get()) + int(UI.txt6.get())
         c = 2 * int(UI.txt5.get()) + 2 * int(UI.txt6.get()) + int(UI.txt2.get()) + int(UI.txt4.get())
-        winner = get_winner(a,b,c)
-        print_result(UI, "Сумма очков:",
+
+        winner = get_winner(a, b, c)
+        print_result(UI,
+                     "Модель Борда",
+                     "Сумма очков:",
                      f"A {a}",
                      f"B {b}",
                      f"C {c}",
